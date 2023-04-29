@@ -1,37 +1,48 @@
 import { UserType, SexType } from '@prisma/client';
-import { IsEmail, IsString } from 'class-validator';
+import {IsEmail, IsNotEmpty, IsNumber, IsString} from 'class-validator';
 // import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsString()
+  @IsNotEmpty()
   password: string;
 
   @IsString()
+  @IsNotEmpty()
   type: UserType;
 
   @IsString()
+  @IsNotEmpty()
   username: string;
 
   @IsString()
-  firstname: string;
+  @IsNotEmpty()
+  firstName: string;
 
   @IsString()
-  lastname: string;
+  @IsNotEmpty()
+  lastName: string;
 
   @IsString()
+  @IsNotEmpty()
   sex: SexType;
 
-  @IsString()
+  @IsNumber()
+  @IsNotEmpty()
   age: number;
 
   @IsString()
+  @IsNotEmpty()
   phone: string;
 
   @IsString()
+  @IsNotEmpty()
   country: string;
 
   @IsString()
+  @IsNotEmpty()
   city: string;
 }

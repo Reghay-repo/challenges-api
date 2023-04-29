@@ -8,9 +8,14 @@ import { CreateCompanyDto } from '../user/dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
-  register(@Body() dto: CreateCompanyDto | CreateUserDto) {
-    return this.authService.register(dto);
+  @Post('register/company')
+  registerCompany(@Body() dto: CreateCompanyDto) {
+    return this.authService.registerCompany(dto);
+  }
+
+  @Post('register/user')
+  registerUser(@Body() dto: CreateUserDto) {
+    return this.authService.registerUser(dto);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -9,6 +9,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(5050);
+  await app.listen(3000);
 }
 bootstrap();

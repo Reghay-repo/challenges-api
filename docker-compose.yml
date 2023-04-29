@@ -1,9 +1,9 @@
 version: '3.8'
 services:
   dev-db:
-    image: postgres:13
+    image: postgres
     ports:
-      - 5435:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
@@ -11,9 +11,9 @@ services:
     networks:
       - nestjs
   test-db:
-    image: postgres:13
+    image: postgres
     ports:
-      - 5435:5432
+      - 5435:5435
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
