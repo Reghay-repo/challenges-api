@@ -1,10 +1,11 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, LoginDto } from './dto';
+import { LoginDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CreateCompanyDto, CreateUserDto } from '../user/dto';
 
 @Injectable({})
 export class AuthService {
@@ -13,19 +14,18 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
-  async register(dto: AuthDto) {
+  async register(dto: CreateUserDto | CreateCompanyDto) {
     try {
       // hash the user password
       const hash = await argon.hash(dto.password);
+      delete dto.password;
 
       // save the new user in db
 
       const user = await this.prisma.user.create({
         data: {
-          email: dto.email,
+          ...dto,
           hash,
-          firstName: dto.firstName,
-          lastName: dto.lastName,
         },
       });
 
@@ -35,6 +35,7 @@ export class AuthService {
         success: true,
         data: token,
       };
+
       return response;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {

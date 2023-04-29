@@ -1,21 +1,46 @@
 import { IsEmail, IsOptional, IsString } from 'class-validator';
 // import { ApiProperty } from '@nestjs/swagger';
-// import { Company, Normal, UserType } from '@prisma/client';
-
-export class UserUpdateDto {
+export class EditUserDto {
   @IsEmail()
-  @IsOptional()
-  email?: string;
+  email: string;
 
   @IsString()
   @IsOptional()
-  username?: string;
+  password: string;
 
-  type: UserType;
-
+  @IsString()
   @IsOptional()
-  company?: Company;
+  username: string;
 
+  @IsString()
   @IsOptional()
-  normal?: Normal;
+  firstname: string;
+
+  @IsString()
+  @IsOptional()
+  lastname: string;
+
+  @IsString()
+  @IsOptional()
+  phone: string;
+
+  @IsString()
+  @IsString()
+  @IsOptional()
+  country: string;
+
+  @IsString()
+  @IsOptional()
+  city: string;
+
+  @IsString()
+  @IsOptional()
+  address: string;
+
+  @IsString()
+  field: string;
+
+  @IsString()
+  @IsOptional()
+  ice: string;
 }
