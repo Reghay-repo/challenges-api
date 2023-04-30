@@ -30,7 +30,7 @@ model User {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   challenges Challenge[]
-  Post       Post[]
+  posts       Post[]
 
   @@map("users")
 }
