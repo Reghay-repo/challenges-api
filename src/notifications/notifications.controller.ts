@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { GetUser } from '../auth/decorator';
 
 @Controller('notifications')
