@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ChallengeModule } from './challenge/challenge.module';
 import { PostsModule } from './posts/posts.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PostsModule } from './posts/posts.module';
     PrismaModule,
     PostsModule,
     ChallengeModule,
+    NotificationsModule,
   ],
   providers: [PrismaService],
 })
