@@ -11,9 +11,9 @@ datasource db {
 }
 
 model User {
-  id               Int         @id @default(autoincrement())
-  username         String      @unique
-  email            String      @unique
+  id               Int            @id @default(autoincrement())
+  username         String         @unique
+  email            String         @unique
   type             UserType
   hash             String
   sex              SexType?
@@ -25,18 +25,30 @@ model User {
   city             String?
   address          String?
   field            String?
-  ice              String?     @unique
-  isBanned         Boolean     @default(false)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  ice              String?        @unique
+  isBanned         Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   challenges       Challenge[]
   Post             Post[]
-  messagesSent     Message[]   @relation("SentMessages")
-  messagesReceived Message[]   @relation("ReceivedMessages")
-  sentGifts        Gift[]      @relation("SentGifts")
-  receivedGifts    Gift[]      @relation("ReceivedGifts")
+  messagesSent     Message[]      @relation("SentMessages")
+  messagesReceived Message[]      @relation("ReceivedMessages")
+  sentGifts        Gift[]         @relation("SentGifts")
+  receivedGifts    Gift[]         @relation("ReceivedGifts")
+  notifications    Notification[]
 
   @@map("users")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
 }
 
 model Gift {
