@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ChallengeModule } from './challenge/challenge.module';
 import { PostsModule } from './posts/posts.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { PostsModule } from './posts/posts.module';
     UserModule,
     PrismaModule,
     PostsModule,
+    ChallengeModule,
   ],
   providers: [PrismaService],
 })
