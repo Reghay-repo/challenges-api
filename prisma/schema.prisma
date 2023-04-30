@@ -36,6 +36,7 @@ model User {
   sentGifts        Gift[]         @relation("SentGifts")
   receivedGifts    Gift[]         @relation("ReceivedGifts")
   notifications    Notification[]
+  likes            Like[]
 
   @@map("users")
 }
@@ -49,6 +50,18 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("notifications")
+}
+
+model Like {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  postId      Int?
+  challengeId Int?
+  user        User       @relation(fields: [userId], references: [id])
+  post        Post?      @relation(fields: [postId], references: [id])
+  challenge   Challenge? @relation(fields: [challengeId], references: [id])
+
+  @@map("likes")
 }
 
 model Gift {
@@ -84,6 +97,7 @@ model Challenge {
   updatedAt   DateTime @updatedAt
   User        User?    @relation(fields: [userId], references: [id])
   userId      Int?
+  likes       Like[]
 
   @@map("challenges")
 }
@@ -97,6 +111,7 @@ model Post {
   User        User?    @relation(fields: [userId], references: [id])
   userId      Int?
   updatedAt   DateTime @updatedAt
+  likes       Like[]
 
   @@map("posts")
 }

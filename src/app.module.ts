@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ChallengeModule } from './challenge/challenge.module';
 import { PostsModule } from './posts/posts.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     PostsModule,
     ChallengeModule,
     NotificationsModule,
+    LikesModule,
   ],
   providers: [PrismaService],
 })
