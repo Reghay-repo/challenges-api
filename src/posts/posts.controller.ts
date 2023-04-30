@@ -6,37 +6,49 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { GetUser } from '../auth/decorator';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() dto: CreatePostDto, @GetUser() userId: number) {
+    return this.postsService.create(dto, userId);
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@GetUser('id') userId: number) {
+    return this.postsService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  findOne(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) postId: number,
+  ) {
+    return this.postsService.findOne(userId, postId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  update(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) postId: number,
+    @Body() dto: UpdatePostDto,
+  ) {
+    return this.postsService.update(+userId, +postId, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  remove(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) postId: number,
+  ) {
+    return this.postsService.remove(+userId, +postId);
   }
 }

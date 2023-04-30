@@ -1,26 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PostsService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(private prisma: PrismaService) {}
+
+  async create(dto: CreatePostDto, userId: number) {
+    const post = await this.prisma.post.create({
+      data: {
+        userId,
+        ...dto,
+      },
+    });
+
+    return post;
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll(userId: number) {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        id: userId,
+      },
+    });
+    return {
+      success: true,
+      data: posts,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(postId: number, userId: number) {
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    // check if user own the post
+    if (!post || post.userId !== userId) {
+      throw new ForbiddenException('Access to resource is denied.');
+    }
+
+    return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(userId: number, postId: number, dto: UpdatePostDto) {
+    // get the post by id
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    // check if user owns the post
+    if (!post || post.userId !== userId)
+      throw new ForbiddenException('Access to resources denied');
+
+    return this.prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        ...dto,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(userId: number, postId: number) {
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    // check if user owns the post
+    if (!post || post.userId !== userId)
+      throw new ForbiddenException('Access to resources denied');
+
+    await this.prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
   }
 }
