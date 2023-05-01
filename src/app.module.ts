@@ -8,6 +8,7 @@ import { ChallengeModule } from './challenge/challenge.module';
 import { PostsModule } from './posts/posts.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { LikesModule } from './likes/likes.module';
+import { PresignedUrlsModule } from './presigned-urls/presigned-urls.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { LikesModule } from './likes/likes.module';
     ChallengeModule,
     NotificationsModule,
     LikesModule,
+    PresignedUrlsModule,
   ],
   providers: [PrismaService],
 })
