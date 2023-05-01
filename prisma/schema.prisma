@@ -11,9 +11,9 @@ datasource db {
 }
 
 model User {
-  id               Int            @id @default(autoincrement())
-  username         String         @unique
-  email            String         @unique
+  id               Int             @id @default(autoincrement())
+  username         String          @unique
+  email            String          @unique
   type             UserType
   hash             String
   sex              SexType?
@@ -25,20 +25,43 @@ model User {
   city             String?
   address          String?
   field            String?
-  ice              String?        @unique
-  isBanned         Boolean        @default(false)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  ice              String?         @unique
+  isBanned         Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   challenges       Challenge[]
   Post             Post[]
-  messagesSent     Message[]      @relation("SentMessages")
-  messagesReceived Message[]      @relation("ReceivedMessages")
-  sentGifts        Gift[]         @relation("SentGifts")
-  receivedGifts    Gift[]         @relation("ReceivedGifts")
+  messagesSent     Message[]       @relation("SentMessages")
+  messagesReceived Message[]       @relation("ReceivedMessages")
+  sentGifts        Gift[]          @relation("SentGifts")
+  receivedGifts    Gift[]          @relation("ReceivedGifts")
   notifications    Notification[]
-  likes            Like[]
+  likes            PostLike[]
+  ChallengeLike    ChallengeLike[]
 
   @@map("users")
+}
+
+model PostLike {
+  id     Int   @id @default(autoincrement())
+  userId Int
+  postId Int?
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("posts_likes")
+}
+
+model ChallengeLike {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  challengeId Int?
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge   Challenge? @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, userId])
+  @@map("challenges_likes")
 }
 
 model Notification {
@@ -50,18 +73,6 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("notifications")
-}
-
-model Like {
-  id          Int        @id @default(autoincrement())
-  userId      Int
-  postId      Int?
-  challengeId Int?
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post        Post?      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  challenge   Challenge? @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-
-  @@map("likes")
 }
 
 model Gift {
@@ -88,30 +99,30 @@ model Message {
 }
 
 model Challenge {
-  id          Int      @id @default(autoincrement())
-  description String?
-  videoUrl    String?
-  tags        String[]
-  endDate     DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  User        User?    @relation(fields: [userId], references: [id])
-  userId      Int?
-  likes       Like[]
+  id            Int             @id @default(autoincrement())
+  description   String?
+  videoUrl      String?
+  tags          String[]
+  endDate       DateTime        @default(now())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  User          User?           @relation(fields: [userId], references: [id])
+  userId        Int?
+  ChallengeLike ChallengeLike[]
 
   @@map("challenges")
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   description String?
   imageUrls   String[]
   tags        String[]
-  createdAt   DateTime @default(now())
-  User        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime   @default(now())
+  User        User?      @relation(fields: [userId], references: [id])
   userId      Int?
-  updatedAt   DateTime @updatedAt
-  likes       Like[]
+  updatedAt   DateTime   @updatedAt
+  PostLike    PostLike[]
 
   @@map("posts")
 }
