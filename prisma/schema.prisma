@@ -38,8 +38,19 @@ model User {
   notifications    Notification[]
   likes            PostLike[]
   ChallengeLike    ChallengeLike[]
+  Comment          Comment[]
 
   @@map("users")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
+  @@map("comments")
 }
 
 model PostLike {
