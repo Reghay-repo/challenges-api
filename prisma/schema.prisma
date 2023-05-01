@@ -57,9 +57,9 @@ model Like {
   userId      Int
   postId      Int?
   challengeId Int?
-  user        User       @relation(fields: [userId], references: [id])
-  post        Post?      @relation(fields: [postId], references: [id])
-  challenge   Challenge? @relation(fields: [challengeId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post        Post?      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  challenge   Challenge? @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@map("likes")
 }
