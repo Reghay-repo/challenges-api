@@ -65,14 +65,6 @@ async function main() {
       type: 'NORMAL',
     },
   });
-  await prisma.like.create({
-    data: {
-      challengeId: findChallenge.id,
-      userId: find_normal_user.id,
-    },
-  });
-  console.log(findChallenge);
-  console.log(find_normal_user);
 }
 
 main()
