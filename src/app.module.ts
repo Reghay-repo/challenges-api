@@ -6,9 +6,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ChallengeModule } from './challenge/challenge.module';
 import { PostsModule } from './posts/posts.module';
-import { NotificationsModule } from './notifications/notifications.module';
 import { LikesModule } from './likes/likes.module';
 import { PresignedUrlsModule } from './presigned-urls/presigned-urls.module';
+import { CommentsModule } from './comments/comments.module';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
   imports: [
@@ -20,9 +21,11 @@ import { PresignedUrlsModule } from './presigned-urls/presigned-urls.module';
     PrismaModule,
     PostsModule,
     ChallengeModule,
-    NotificationsModule,
     LikesModule,
     PresignedUrlsModule,
+    LikesModule,
+    CommentsModule,
+    FollowModule,
   ],
   providers: [PrismaService],
 })

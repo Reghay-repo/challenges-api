@@ -31,82 +31,23 @@ model User {
   updatedAt        DateTime        @updatedAt
   challenges       Challenge[]
   Post             Post[]
-  messagesSent     Message[]       @relation("SentMessages")
-  messagesReceived Message[]       @relation("ReceivedMessages")
-  sentGifts        Gift[]          @relation("SentGifts")
-  receivedGifts    Gift[]          @relation("ReceivedGifts")
-  notifications    Notification[]
-  likes            PostLike[]
-  ChallengeLike    ChallengeLike[]
-  Comment          Comment[]
-
+  LikedPosts       PostLike[]
+  LikedChallenges  ChallengeLike[]
+  CommentedPosts   PostComment[]
+  CommentedChallenges ChallengeComment[]
+  followers Follow[] @relation("following")
+  following Follow[] @relation("follower")
   @@map("users")
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-
-  @@map("comments")
-}
-
-model PostLike {
-  id     Int   @id @default(autoincrement())
-  userId Int
-  postId Int?
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post   Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@unique([postId, userId])
-  @@map("posts_likes")
-}
-
-model ChallengeLike {
-  id          Int        @id @default(autoincrement())
-  userId      Int
-  challengeId Int?
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  challenge   Challenge? @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-
-  @@unique([challengeId, userId])
-  @@map("challenges_likes")
-}
-
-model Notification {
-  id        Int      @id @default(autoincrement())
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@map("notifications")
-}
-
-model Gift {
-  id         Int    @id @default(autoincrement())
-  name       String
-  sender     User   @relation("SentGifts", fields: [senderId], references: [id])
-  senderId   Int
-  receiver   User   @relation("ReceivedGifts", fields: [receiverId], references: [id])
-  receiverId Int
-
-  @@map("gifts")
-}
-
-model Message {
-  id            Int     @id @default(autoincrement())
-  text          String
-  messageStatus Boolean
-  sender        User?   @relation("SentMessages", fields: [senderId], references: [id])
-  senderId      Int?
-  receiver      User?   @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  receiverId    Int?
-
-  @@map("messages")
+model Follow {
+  id          Int          @id @default(autoincrement())
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int
+  @@unique([followerId, followingId])
+  @@map("follows")
 }
 
 model Challenge {
@@ -117,10 +58,10 @@ model Challenge {
   endDate       DateTime        @default(now())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  User          User?           @relation(fields: [userId], references: [id])
-  userId        Int?
-  ChallengeLike ChallengeLike[]
-
+  User          User           @relation(fields: [userId], references: [id])
+  userId        Int
+  ChallengeLikes ChallengeLike[]
+  ChallengeComments ChallengeComment[]
   @@map("challenges")
 }
 
@@ -130,12 +71,57 @@ model Post {
   imageUrls   String[]
   tags        String[]
   createdAt   DateTime   @default(now())
-  User        User?      @relation(fields: [userId], references: [id])
-  userId      Int?
+  User        User      @relation(fields: [userId], references: [id])
+  userId      Int
   updatedAt   DateTime   @updatedAt
-  PostLike    PostLike[]
+  PostLikes    PostLike[]
+  PostComments PostComment[]
 
   @@map("posts")
+}
+
+model PostComment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  userId    Int
+  postId    Int
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([postId, userId])
+  @@map("post_comments")
+}
+
+model ChallengeComment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  userId    Int
+  challengeId Int
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  @@unique([challengeId, userId])
+  @@map("challenge_comments")
+}
+
+model PostLike {
+  id     Int   @id @default(autoincrement())
+  userId Int
+  postId Int
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([postId, userId])
+  @@map("post_likes")
+}
+
+model ChallengeLike {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  challengeId Int
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge   Challenge  @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  @@unique([challengeId, userId])
+  @@map("challenge_likes")
 }
 
 enum UserType {

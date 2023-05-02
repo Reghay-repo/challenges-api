@@ -13,11 +13,18 @@ import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
+import { LikesService } from '../likes/likes.service';
+import { CommentsService } from '../comments/comments.service';
+import { CommentDto } from '../comments/dto/comment.dto';
 
 @UseGuards(JwtGuard)
 @Controller('challenges')
 export class ChallengeController {
-  constructor(private readonly challengeService: ChallengeService) {}
+  constructor(
+    private readonly challengeService: ChallengeService,
+    private likeService: LikesService,
+    private commentService: CommentsService,
+  ) {}
 
   @Post()
   async create(@GetUser('id') userId: number, @Body() dto: CreateChallengeDto) {
@@ -30,8 +37,8 @@ export class ChallengeController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.challengeService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return await this.challengeService.findOne(id);
   }
 
   @Get('/foruser')
@@ -41,14 +48,49 @@ export class ChallengeController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateChallengeDto: UpdateChallengeDto,
   ) {
-    return await this.challengeService.update(+id, updateChallengeDto);
+    return await this.challengeService.update(id, updateChallengeDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.challengeService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return await this.challengeService.remove(id);
+  }
+
+  // LIKE ROUTES
+  @Post('like/:id')
+  async like(@GetUser('id') userId: number, @Param('id') challengeId: number) {
+    return await this.likeService.likeChallenge(userId, challengeId);
+  }
+
+  @Delete('unlike/:id')
+  async unlike(
+    @GetUser('id') userId: number,
+    @Param('id') challengeId: number,
+  ) {
+    return await this.likeService.unlikeChallnge(userId, challengeId);
+  }
+
+  // Comment routes
+  @Post('comment/:id')
+  async comment(
+    @GetUser('id') userId: number,
+    @Param('id') challengeId: number,
+    @Body() dto: CommentDto,
+  ) {
+    return await this.commentService.commentChallenge(userId, challengeId, dto);
+  }
+
+  @Delete('uncomment/:id')
+  async deleteComment(
+    @GetUser('id') userId: number,
+    @Param('id') challengeId: number,
+  ) {
+    return await this.commentService.deleteChallengeComment(
+      userId,
+      challengeId,
+    );
   }
 }
